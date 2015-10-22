@@ -1,0 +1,12 @@
+module ItunesReceiptDecoder
+  module ASN1FieldTypes
+    BUNDLE_ID = 2
+    APP_VERSION = 3
+    OPAQUE_VALUE = 4
+    SHA_1_HASH = 5
+    IN_APP_PURCHASE_RECEIPT = 17
+    ORIGINAL_APPLICATION_VERSION = 19
+    RECEIPT_CREATION_DATE = 12
+    RECEIPT_EXPIRATION_DATE = 21
+  end
+end

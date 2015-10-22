@@ -9,23 +9,20 @@ module ItunesReceiptDecoder
     end
 
     def decode
-      parse_app_receipt_fields(payload.value)
-      receipt
+      self.receipt = parse_app_receipt_fields(payload.value)
     end
+
+    private
 
     def app_receipt_fields
       {
+        0 => :environment,
         2 => :bundle_id,
         3 => :application_version,
         12 => :creation_date,
         17 => :in_app,
         19 => :original_application_version,
-        21 => :expiration_date
-      }
-    end
-
-    def in_app_purchase_receipt_fields
-      {
+        21 => :expiration_date,
         1701 => :quantity,
         1702 => :product_id,
         1703 => :transaction_id,
@@ -38,27 +35,22 @@ module ItunesReceiptDecoder
       }
     end
 
-    def parse_app_receipt_fields(data)
-      data.each do |seq|
+    def parse_app_receipt_fields(fields)
+      result = {}
+      fields.each do |seq|
         type = seq.value[0].value.to_i
         next unless field = app_receipt_fields[type]
         value = OpenSSL::ASN1.decode(seq.value[2].value).value
-        if field == :in_app
-          receipt[field] ||= []
-          receipt[field].push(parse_in_app_purchase_receipt_fields(value))
+        case field
+        when :in_app
+          result[:in_app] ||= []
+          result[:in_app].push parse_app_receipt_fields(value)
+        when :creation_date, :expiration_date, :purchase_date,
+             :original_purchase_date, :expires_date, :cancellation_date
+          result[field] = value.empty? ? nil : Time.parse(value).utc
         else
-          receipt[field] = value
+          result[field] = value.class == OpenSSL::BN ? value.to_i : value.to_s
         end
-      end
-    end
-
-    def parse_in_app_purchase_receipt_fields(data)
-      result = {}
-      data.each do |seq|
-        type = seq.value[0].value.to_i
-        next unless field = in_app_purchase_receipt_fields[type]
-        value = OpenSSL::ASN1.decode(seq.value[2].value).value
-        result[field] = value.to_s
       end
       result
     end

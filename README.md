@@ -1,4 +1,5 @@
-# itunes_receipt_decoder
+# iTunes Receipt Decoder
+
 Decode iTunes OS X and iOS receipts without remote server-side validation by using the Apple Inc Root Certificate.
 
 [![Code Climate](https://codeclimate.com/repos/562a9bf3e30ba02b00002fe1/badges/af7d413fc6697c2d5139/gpa.svg)](https://codeclimate.com/repos/562a9bf3e30ba02b00002fe1/feed)
@@ -33,6 +34,11 @@ ItunesReceiptDecoder::Config.certificate_path = 'path/to/AppleIncRootCertificate
 receipt = ItunesReceiptDecoder::Decode.new(base64_encoded_receipt)
 receipt.decode
 ```
+
+## Todo
+
+* Parse `SKPaymentTransaction#transactionReceipt` style receipts, currently only Grand Unified Receipts from `appStoreReceiptURL` are being parsed.
+* Better error handeling and signature validation.
 
 ---
 

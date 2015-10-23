@@ -17,12 +17,9 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb'].reverse
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'bundler', '~> 1.3'
   spec.add_development_dependency 'rake', '~> 10.4'
-  spec.add_development_dependency 'activesupport', '~> 4.2'
   spec.add_development_dependency 'rspec', '~> 3.3'
   spec.add_development_dependency 'rubygems-tasks', '~> 0.2'
-  spec.add_development_dependency 'timecop', '~> 0.8'
   spec.add_development_dependency 'codeclimate-test-reporter', '~> 0.4'
   spec.add_development_dependency 'rubocop', '~> 0.33'
   spec.add_development_dependency 'awesome_print', '~> 1.6'

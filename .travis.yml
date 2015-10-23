@@ -1,0 +1,17 @@
+language: ruby
+
+rvm:
+  - 1.9.3
+  - 2.0.0
+  - 2.1.6
+  - 2.2.0
+
+install:
+  - bundle install --path vendor/bundle
+
+script:
+  - bundle exec rake
+
+addons:
+  code_climate:
+    repo_token: 6bd92cf69c3ea88466662098f4a9dfedb42f71d288a7a14bece627acfcb7c045

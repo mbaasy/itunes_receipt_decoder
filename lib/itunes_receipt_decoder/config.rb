@@ -1,4 +1,8 @@
+##
+# ItunesReceiptDecoder
 module ItunesReceiptDecoder
+  ##
+  # ItunesReceiptDecoder::Config
   class Config
     class << self
       attr_accessor :certificate_path

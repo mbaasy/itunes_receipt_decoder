@@ -9,6 +9,9 @@ rvm:
 install:
   - bundle install --path vendor/bundle
 
+before_script:
+  - wget https://www.apple.com/appleca/AppleIncRootCertificate.cer
+
 script:
   - bundle exec rake
 

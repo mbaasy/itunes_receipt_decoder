@@ -6,7 +6,10 @@ Gem::Specification.new do |spec|
   spec.name = 'itunes_receipt_decoder'
   spec.version = ItunesReceiptDecoder::VERSION
   spec.summary = 'Decode iTunes OS X and iOS receipts'
-  spec.description = 'Decode iTunes OS X and iOS receipts'
+  spec.description = <<-EOF
+    Decode iTunes OS X and iOS receipts without remote server-side validation
+    by using the Apple Inc Root Certificate.
+  EOF
   spec.license = 'MIT'
   spec.authors = ['mbaasy.com']
   spec.email = 'hello@mbaasy.com'

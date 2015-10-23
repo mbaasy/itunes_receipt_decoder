@@ -38,13 +38,12 @@ module ItunesReceiptDecoder
     def parse_app_receipt_fields(fields)
       result = {}
       fields.each do |seq|
-        type = seq.value[0].value.to_i
-        next unless field = app_receipt_fields[type]
-        value = OpenSSL::ASN1.decode(seq.value[2].value).value
+        type, _version, value = seq.value.map(&:value)
+        next unless field = app_receipt_fields[type.to_i]
+        value = OpenSSL::ASN1.decode(value).value
         case field
         when :in_app
-          result[:in_app] ||= []
-          result[:in_app].push parse_app_receipt_fields(value)
+          (result[field] ||= []).push(parse_app_receipt_fields(value))
         when :creation_date, :expiration_date, :purchase_date,
              :original_purchase_date, :expires_date, :cancellation_date
           result[field] = value.empty? ? nil : Time.parse(value).utc
@@ -54,8 +53,6 @@ module ItunesReceiptDecoder
       end
       result
     end
-
-    private
 
     def payload
       @payload ||= OpenSSL::ASN1.decode(pkcs7.data)

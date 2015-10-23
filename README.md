@@ -5,7 +5,7 @@ Decode iTunes OS X and iOS receipts without remote server-side validation by usi
 [![Code Climate](https://codeclimate.com/repos/562a9bf3e30ba02b00002fe1/badges/af7d413fc6697c2d5139/gpa.svg)](https://codeclimate.com/repos/562a9bf3e30ba02b00002fe1/feed)
 [![Test Coverage](https://codeclimate.com/repos/562a9bf3e30ba02b00002fe1/badges/af7d413fc6697c2d5139/coverage.svg)](https://codeclimate.com/repos/562a9bf3e30ba02b00002fe1/coverage)
 [![Build Status](https://travis-ci.org/mbaasy/itunes_receipt_decoder.svg?branch=master)](https://travis-ci.org/mbaasy/itunes_receipt_decoder)
-
+[![Gem Version](https://badge.fury.io/rb/itunes_receipt_decoder.svg)](https://badge.fury.io/rb/itunes_receipt_decoder)
 ## Install
 
 Install from the command line:

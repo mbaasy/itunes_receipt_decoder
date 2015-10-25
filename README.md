@@ -117,6 +117,12 @@ receipt.decode
 ```
 The example above is using [this receipt file](/spec/fixtures/receipt.txt).
 
+## Testing
+
+1. Add [AppleIncRootCertificate.cer](https://www.apple.com/appleca/AppleIncRootCertificate.cer) to the repo root path.
+1. `bundle install`
+1. `rake`
+
 ## Todo
 
 * Parse `SKPaymentTransaction#transactionReceipt` style receipts, currently only Grand Unified Receipts from `appStoreReceiptURL` are being parsed.

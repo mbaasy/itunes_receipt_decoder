@@ -1,5 +1,6 @@
 require 'awesome_print'
 require 'itunes_receipt_decoder'
+require 'pry-byebug'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

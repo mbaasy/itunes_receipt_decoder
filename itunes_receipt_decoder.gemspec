@@ -20,6 +20,8 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb'].reverse
   spec.require_paths = ['lib']
 
+  spec.add_dependency 'CFPropertyList', '~> 2.3'
+
   spec.add_development_dependency 'rake', '~> 10.4'
   spec.add_development_dependency 'rspec', '~> 3.3'
   spec.add_development_dependency 'rubygems-tasks', '~> 0.2'

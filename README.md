@@ -140,10 +140,15 @@ decoder.receipt # =>
 `ItunesReceiptDecoder.new` will return either a `ItunesReceiptDecoder::Decode::UnifiedReceipt` or `ItunesReceiptDecoder::Decode::TransactionReceipt` instance. Both classes have the same public methods available:
 
 `#decode` : Decodes the receipt and returns `self`.
+
 `#receipt` : Returns the receipt properties as a Hash.
+
 `#environment` : Returns the environment as a String.
+
 `#production?` : True if the receipt was created in the Production environment.
+
 `#sandbox?` : True if the receipt was **not** created in the Production environment.
+
 `#style` : Either `:transaction` or `:unified`
 
 ## Testing

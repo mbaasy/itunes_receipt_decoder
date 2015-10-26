@@ -9,6 +9,9 @@
 /test/version_tmp/
 /tmp/
 
+# live fixtures
+/spec/fixtures/production_ios6_receipt.txt
+
 ## Documentation cache and generated files:
 /.yardoc/
 /_yardoc/

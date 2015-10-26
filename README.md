@@ -62,7 +62,8 @@ decoder.receipt # =>
     :purchase_date=>"2015-08-10T06:49:32Z",
     :original_purchase_date=>"2015-08-10T06:49:33Z",
     :expires_date=>"2015-08-10T06:54:32Z"
-  }, {:cancellation_date=>"",
+  }, {
+    :cancellation_date=>"",
     :quantity=>1,
     :product_id=>"monthly",
     :web_order_line_item_id=>1000000030274154,
@@ -71,7 +72,8 @@ decoder.receipt # =>
     :purchase_date=>"2015-08-10T06:54:32Z",
     :original_purchase_date=>"2015-08-10T06:53:18Z",
     :expires_date=>"2015-08-10T06:59:32Z"
-  }, {:cancellation_date=>"",
+  }, {
+    :cancellation_date=>"",
     :quantity=>1,
     :product_id=>"monthly",
     :web_order_line_item_id=>1000000030274165,
@@ -80,7 +82,8 @@ decoder.receipt # =>
     :purchase_date=>"2015-08-10T06:59:32Z",
     :original_purchase_date=>"2015-08-10T06:57:34Z",
     :expires_date=>"2015-08-10T07:04:32Z"
-  }, {:cancellation_date=>"",
+  }, {
+    :cancellation_date=>"",
     :quantity=>1,
     :product_id=>"monthly",
     :web_order_line_item_id=>1000000030274192,
@@ -89,7 +92,8 @@ decoder.receipt # =>
     :purchase_date=>"2015-08-10T07:04:32Z",
     :original_purchase_date=>"2015-08-10T07:02:33Z",
     :expires_date=>"2015-08-10T07:09:32Z"
-  }, {:cancellation_date=>"",
+  }, {
+    :cancellation_date=>"",
     :quantity=>1,
     :product_id=>"monthly",
     :web_order_line_item_id=>1000000030274219,
@@ -98,7 +102,8 @@ decoder.receipt # =>
     :purchase_date=>"2015-08-10T07:09:32Z",
     :original_purchase_date=>"2015-08-10T07:08:30Z",
     :expires_date=>"2015-08-10T07:14:32Z"
-  }, {:cancellation_date=>"",
+  }, {
+    :cancellation_date=>"",
     :quantity=>1,
     :product_id=>"monthly",
     :web_order_line_item_id=>1000000030274249,

@@ -7,15 +7,21 @@ module ItunesReceiptDecoder
     ##
     # ItunesReceiptDecoder::Decode::TransactionReceipt
     class TransactionReceipt < Base
+      ##
+      # Decodes the receipt
       def decode
         @receipt ||= purchase_info
         self
       end
 
+      ##
+      # Just returns :transaction
       def style
         :transaction
       end
 
+      ##
+      # Gets the environment from the payload
       def environment
         payload['environment']
       end

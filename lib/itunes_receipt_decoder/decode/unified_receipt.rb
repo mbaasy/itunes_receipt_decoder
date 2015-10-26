@@ -7,6 +7,10 @@ module ItunesReceiptDecoder
     ##
     # ItunesReceiptDecoder::Decode::UnifiedReceipt
     class UnifiedReceipt < Base
+      ##
+      # ASN.1 Field types
+      #
+      # See https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW1
       RECEIPT_FIELDS = {
         0 => :environment,
         2 => :bundle_id,
@@ -26,15 +30,21 @@ module ItunesReceiptDecoder
         1711 => :web_order_line_item_id
       }
 
+      ##
+      # Decodes the receipt
       def decode
         @receipt ||= parse_app_receipt_fields(payload.value)
         self
       end
 
+      ##
+      # Just returns :unified
       def style
         :unified
       end
 
+      ##
+      # Gets the environment from the receipt
       def environment
         decode.receipt[:environment]
       end

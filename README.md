@@ -169,4 +169,4 @@ decoder.receipt # =>
 
 ---
 
-Copyright 2015 [mbaasy.com](https://mbaasy.com/). This project is subject to the [MIT Licence](/LICENCE).
+Copyright 2015 [mbaasy.com](https://mbaasy.com/). This project is subject to the [MIT Licence](/LICENSE).

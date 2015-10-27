@@ -140,6 +140,17 @@ decoder.receipt # =>
 }
 ```
 
+## Constructor
+
+`ItunesReceiptDecoder.new` expects the base64 encoded receipt as the first argument. There optional second argument defined as a hash, valid options are:
+
+`expand_timestamps: true` : The timestamps included in the unified receipt are not in the same format as a validation from iTunes' servers. Use this option to expand the timestamps and reformat them in the same format as you would expect from a validation. e.g.
+
+```ruby
+ItunesReceiptDecoder.new base64_encoded_receipt,
+                         expand_timestamps: true
+```
+
 ## Methods and properties
 
 `ItunesReceiptDecoder.new` will return either a `ItunesReceiptDecoder::Decode::UnifiedReceipt` or `ItunesReceiptDecoder::Decode::TransactionReceipt` instance. Both classes have the same public methods available:

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    itunes_receipt_decoder (0.1.0)
+    itunes_receipt_decoder (0.1.1)
       CFPropertyList (~> 2.3)
 
 GEM

@@ -30,6 +30,10 @@ module ItunesReceiptDecoder
         1711 => :web_order_line_item_id
       }
 
+      TIMESTAMP_FIELDS = %i(creation_date expiration_date purchase_date
+                            original_purchase_date expires_date
+                            cancellation_date)
+
       ##
       # Decodes the receipt
       def decode
@@ -66,9 +70,25 @@ module ItunesReceiptDecoder
         case field
         when :in_app
           (result[field] ||= []).push(parse_app_receipt_fields(value))
+        when *timestamp_fields
+          result.merge! expand_timestamp(field, value) unless value.empty?
         else
           result[field] = value.class == OpenSSL::BN ? value.to_i : value.to_s
         end
+      end
+
+      def timestamp_fields
+        options[:expand_timestamps] && TIMESTAMP_FIELDS
+      end
+
+      def expand_timestamp(field, value)
+        time = Time.parse(value).utc
+        {
+          field => time.strftime('%F %T') + ' Etc/GMT',
+          "#{field}_ms".to_sym => (time.to_i * 1000).to_s,
+          "#{field}_pst".to_sym => (time + Time.zone_offset('PST'))
+            .strftime('%F %T') + ' America/Los_Angeles'
+        }
       end
 
       def payload

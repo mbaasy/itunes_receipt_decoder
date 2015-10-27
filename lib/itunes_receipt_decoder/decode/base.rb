@@ -9,7 +9,7 @@ module ItunesReceiptDecoder
     class Base
       ##
       # The raw receipt, i.e. not base64 encoded
-      attr_reader :raw_receipt
+      attr_reader :raw_receipt, :options
 
       ##
       # Initializes with a raw (base64 decoded receipt)
@@ -17,8 +17,9 @@ module ItunesReceiptDecoder
       # ==== Arguments
       #
       # * +raw_receipt+ - the raw receipt, i.e. not base64 encoded
-      def initialize(raw_receipt)
+      def initialize(raw_receipt, options = {})
         @raw_receipt = raw_receipt
+        @options = options
       end
 
       ##

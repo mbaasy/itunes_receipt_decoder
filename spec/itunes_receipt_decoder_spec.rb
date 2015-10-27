@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe ItunesReceiptDecoder do
-  let(:instance) { described_class.new(receipt_data) }
+  let(:options) { {} }
+  let(:instance) { described_class.new(receipt_data, options) }
   let(:receipt_data) { File.read(receipt_path).chomp }
 
   shared_context :transaction_receipt do
@@ -118,9 +119,49 @@ describe ItunesReceiptDecoder do
       it 'parses the transactions' do
         subject[:in_app].each do |transaction|
           expect(transaction).to include(
-            :expires_date, :cancellation_date, :quantity, :product_id,
-            :transaction_id, :original_transaction_id
+            :expires_date, :cancellation_date, :purchase_date,
+            :original_purchase_date, :quantity, :product_id, :transaction_id,
+            :original_transaction_id, :web_order_line_item_id
           )
+        end
+      end
+
+      context 'when expand_timestamps is true' do
+        let(:options) { { expand_timestamps: true } }
+
+        it 'parses the receipt' do
+          expect(subject).to include(
+            :application_version, :original_application_version, :environment,
+            :bundle_id, :creation_date, :creation_date_ms, :creation_date_pst,
+            :in_app
+          )
+        end
+
+        it 'includes 7 transactions in :in_app' do
+          expect(subject[:in_app].size).to eq(7)
+        end
+
+        it 'parses the transactions' do
+          subject[:in_app].each do |transaction|
+            if transaction[:web_order_line_item_id] > 0
+              expect(transaction).to include(
+                :expires_date, :expires_date_ms, :expires_date_pst,
+                :purchase_date, :purchase_date_ms, :purchase_date_pst,
+                :original_purchase_date, :original_purchase_date_ms,
+                :original_purchase_date_pst, :quantity, :product_id,
+                :transaction_id, :original_transaction_id,
+                :web_order_line_item_id
+              )
+            else
+              expect(transaction).to include(
+                :purchase_date, :purchase_date_ms, :purchase_date_pst,
+                :original_purchase_date, :original_purchase_date_ms,
+                :original_purchase_date_pst, :quantity, :product_id,
+                :transaction_id, :original_transaction_id,
+                :web_order_line_item_id
+              )
+            end
+          end
         end
       end
     end

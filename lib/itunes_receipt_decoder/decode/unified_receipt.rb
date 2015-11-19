@@ -34,26 +34,17 @@ module ItunesReceiptDecoder
                             original_purchase_date expires_date
                             cancellation_date)
 
-      ##
-      # Decodes the receipt
-      def decode
-        @receipt ||= parse_app_receipt_fields(payload.value)
-        self
-      end
-
-      ##
-      # Just returns :unified
-      def style
-        :unified
-      end
-
-      ##
-      # Gets the environment from the receipt
-      def environment
-        decode.receipt[:environment]
+      def initialize(raw_receipt, options = {})
+        @style = :unified
+        super
       end
 
       private
+
+      def decode
+        @receipt = parse_app_receipt_fields(payload.value)
+        @environment = @receipt.fetch(:environment, nil)
+      end
 
       def parse_app_receipt_fields(fields)
         result = {}
@@ -93,14 +84,18 @@ module ItunesReceiptDecoder
 
       def payload
         verify && OpenSSL::ASN1.decode(pkcs7.data)
+      rescue OpenSSL::ASN1::ASN1Error => e
+        raise DecodingError, e.message
       end
 
       def verify
-        pkcs7.verify(nil, Config.certificate_store, nil, nil)
+        pkcs7.verify [], OpenSSL::X509::Store.new, nil, OpenSSL::PKCS7::NOVERIFY
       end
 
       def pkcs7
         @pkcs7 ||= OpenSSL::PKCS7.new(raw_receipt)
+      rescue ArgumentError => e
+        raise DecodingError, e.message
       end
     end
   end

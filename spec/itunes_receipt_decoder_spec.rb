@@ -12,11 +12,6 @@ describe ItunesReceiptDecoder do
   end
 
   shared_context :unified_receipt do
-    before :all do
-      ItunesReceiptDecoder::Config.certificate_path =
-        File.expand_path('../../AppleIncRootCertificate.cer', __FILE__)
-    end
-
     let(:receipt_path) do
       File.expand_path('../examples/unified_receipt.txt', __FILE__)
     end
@@ -66,8 +61,14 @@ describe ItunesReceiptDecoder do
     end
   end
 
-  describe '#decode' do
-    subject { instance.decode }
+  shared_examples 'an_exception' do
+    it 'raises a DecodingError' do
+      expect { subject }.to raise_error(described_class::DecodingError)
+    end
+  end
+
+  describe '.new' do
+    subject { described_class.new(receipt_data) }
 
     context 'with a transaction receipt' do
       include_context :transaction_receipt
@@ -83,6 +84,29 @@ describe ItunesReceiptDecoder do
       it 'returns an instance of Decode::UnifiedReceipt' do
         expect(subject).to be_a(described_class::Decode::UnifiedReceipt)
       end
+
+      context 'when OpenSSL::ASN1.decode fails' do
+        before do
+          pkcs7_double = instance_double 'OpenSSL::PKCS7',
+                                         data: 'fake',
+                                         verify: true
+          allow(OpenSSL::PKCS7).to receive(:new).and_return(pkcs7_double)
+        end
+
+        it_behaves_like 'an_exception'
+      end
+    end
+
+    context 'when the receipt_data is not base64 encoded' do
+      let(:receipt_data) { '1' }
+
+      it_behaves_like 'an_exception'
+    end
+
+    context 'when the receipt_data is not a transaction or unified receipt' do
+      let(:receipt_data) { Base64.strict_encode64('foobar') }
+
+      it_behaves_like 'an_exception'
     end
   end
 

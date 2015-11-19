@@ -7,35 +7,37 @@ module ItunesReceiptDecoder
     ##
     # ItunesReceiptDecoder::Decode::TransactionReceipt
     class TransactionReceipt < Base
-      ##
-      # Decodes the receipt
-      def decode
-        @receipt ||= purchase_info
-        self
-      end
-
-      ##
-      # Just returns :transaction
-      def style
-        :transaction
-      end
-
-      ##
-      # Gets the environment from the payload
-      def environment
-        payload['environment']
+      def initialize(raw_receipt, options = {})
+        @style = :transaction
+        super
       end
 
       private
 
-      def purchase_info
-        contents = Base64.strict_decode64(payload['purchase-info'])
-        result = parse_plist(contents)
-        result.keys.each do |key|
+      def decode
+        @receipt = parse_purchase_info
+        @environment = payload.fetch('environment')
+      rescue KeyError => e
+        raise DecodingError, e.message
+      end
+
+      def parse_purchase_info
+        purchase_info.keys.each do |key|
           new_key = key.tr('-', '_').to_sym
-          result[new_key] = result.delete(key)
+          purchase_info[new_key] = purchase_info.delete(key)
         end
-        result
+        purchase_info
+      end
+
+      def purchase_info
+        return @purchase_info if @purchase_info
+        contents = Base64.strict_decode64 payload.fetch('purchase-info')
+      rescue KeyError => e
+        raise DecodingError, e.message
+      rescue ArgumentError => e
+        raise DecodingError, e.message
+      else
+        @purchase_info = parse_plist(contents)
       end
 
       def payload
@@ -44,7 +46,9 @@ module ItunesReceiptDecoder
 
       def parse_plist(contents)
         plist = CFPropertyList::List.new(data: contents)
-        CFPropertyList.native_types(plist.value)
+        hash = CFPropertyList.native_types(plist.value)
+        fail DecodingError, 'hash not found in plist' unless hash.is_a?(Hash)
+        hash
       end
     end
   end

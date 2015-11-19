@@ -21,19 +21,10 @@ Or include it in your Gemfile:
 gem 'itunes_receipt_decoder'
 ```
 
-## Setup
-
-Download [AppleIncRootCertificate.cer](https://www.apple.com/appleca/AppleIncRootCertificate.cer) file from [Apple's certificate authority page](https://www.apple.com/certificateauthority/), then reference the certificate path like so:
-
-```ruby
-ItunesReceiptDecoder::Config.certificate_path = 'path/to/AppleIncRootCertificate.cer'
-```
-
 ## Example of a Grand Unified Receipt
 
 ```ruby
 decoder = ItunesReceiptDecoder.new(base64_encoded_receipt)
-decoder.decode # => ItunesReceiptDecoder::Decode::UnifiedReceipt
 
 decoder.receipt # =>
 {
@@ -120,7 +111,6 @@ decoder.receipt # =>
 
 ```ruby
 decoder = ItunesReceiptDecoder.new(base64_encoded_receipt)
-decoder.decode # => ItunesReceiptDecoder::Decode::TransactionReceipt
 
 decoder.receipt # =>
 {
@@ -155,8 +145,6 @@ ItunesReceiptDecoder.new base64_encoded_receipt,
 
 `ItunesReceiptDecoder.new` will return either a `ItunesReceiptDecoder::Decode::UnifiedReceipt` or `ItunesReceiptDecoder::Decode::TransactionReceipt` instance. Both classes have the same public methods available:
 
-`#decode` : Decodes the receipt and returns `self`.
-
 `#receipt` : Returns the receipt properties as a Hash.
 
 `#environment` : Returns the environment as a String.
@@ -169,13 +157,11 @@ ItunesReceiptDecoder.new base64_encoded_receipt,
 
 ## Testing
 
-1. Add [AppleIncRootCertificate.cer](https://www.apple.com/appleca/AppleIncRootCertificate.cer) to the repo root path.
 1. `bundle install`
 1. `rake`
 
 ## Todo
 
-* Better error handeling
 * Signature validation
 
 ---

@@ -12,6 +12,8 @@ require 'itunes_receipt_decoder/decode/unified_receipt'
 module ItunesReceiptDecoder
   class DecodingError < StandardError; end
 
+  PLIST_REGEX = /(\{(?=.+?\bsignature\b.+?)(?=.+?\bpurchase-info\b.+?).+?\})/m
+
   ##
   # Initializes either ItunesReceiptDecoder::Decode::Transaction or
   # ItunesReceiptDecoder::Decode::Unified with the base64 encoded receipt
@@ -24,8 +26,8 @@ module ItunesReceiptDecoder
   rescue ArgumentError => e
     raise DecodingError, e.message
   else
-    if /^\{*+\}$/ =~ raw_receipt
-      Decode::TransactionReceipt.new(raw_receipt, options)
+    if (match = raw_receipt.match(PLIST_REGEX))
+      Decode::TransactionReceipt.new(match[0], options)
     else
       Decode::UnifiedReceipt.new(raw_receipt, options)
     end

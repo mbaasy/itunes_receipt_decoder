@@ -20,7 +20,7 @@ module ItunesReceiptDecoder
   # * +receipt_data+ - the base64 encoded receipt
   # * +options+ - optional arguments
   def self.new(receipt_data, options = {})
-    raw_receipt = Base64.strict_decode64(receipt_data)
+    raw_receipt = Base64.decode64(receipt_data)
   rescue ArgumentError => e
     raise DecodingError, e.message
   else

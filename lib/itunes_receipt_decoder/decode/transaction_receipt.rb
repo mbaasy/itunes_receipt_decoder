@@ -31,7 +31,7 @@ module ItunesReceiptDecoder
 
       def purchase_info
         return @purchase_info if @purchase_info
-        contents = Base64.strict_decode64 payload.fetch('purchase-info')
+        contents = Base64.decode64 payload.fetch('purchase-info')
       rescue KeyError => e
         raise DecodingError, e.message
       rescue ArgumentError => e

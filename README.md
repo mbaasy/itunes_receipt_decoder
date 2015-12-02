@@ -141,9 +141,9 @@ ItunesReceiptDecoder.new base64_encoded_receipt,
                          expand_timestamps: true
 ```
 
-## Methods and properties
+`ItunesReceiptDecoder.new` will return either a `ItunesReceiptDecoder::Decode::UnifiedReceipt` or `ItunesReceiptDecoder::Decode::TransactionReceipt` instance.
 
-`ItunesReceiptDecoder.new` will return either a `ItunesReceiptDecoder::Decode::UnifiedReceipt` or `ItunesReceiptDecoder::Decode::TransactionReceipt` instance. Both classes have the same public methods available:
+## ItunesReceiptDecoder::Decode::UnifiedReceipt methods and properties
 
 `#receipt` : Returns the receipt properties as a Hash.
 
@@ -153,7 +153,13 @@ ItunesReceiptDecoder.new base64_encoded_receipt,
 
 `#sandbox?` : True if the receipt was **not** created in the Production environment.
 
-`#style` : Either `:transaction` or `:unified`
+`#style` : Returns `:unified`
+
+## ItunesReceiptDecoder::Decode::TransactionReceipt methods and properties
+
+`#receipt` : Returns the receipt properties as a Hash.
+
+`#style` : Returns `:transaction`
 
 ## Testing
 

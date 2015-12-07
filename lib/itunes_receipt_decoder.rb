@@ -1,5 +1,4 @@
 require 'time'
-require 'base64'
 require 'openssl'
 require 'cfpropertylist'
 require 'itunes_receipt_decoder/version'
@@ -22,12 +21,12 @@ module ItunesReceiptDecoder
   # * +receipt_data+ - the base64 encoded receipt
   # * +options+ - optional arguments
   def self.new(receipt_data, options = {})
-    raw_receipt = Base64.decode64(receipt_data)
+    raw_receipt = receipt_data.unpack('m').first
   rescue ArgumentError => e
     raise DecodingError, e.message
   else
-    if (match = raw_receipt.match(PLIST_REGEX))
-      Decode::TransactionReceipt.new(match[0], options)
+    if (match = raw_receipt.match(PLIST_REGEX).to_a.first) && match.ascii_only?
+      Decode::TransactionReceipt.new(match, options)
     else
       Decode::UnifiedReceipt.new(raw_receipt, options)
     end

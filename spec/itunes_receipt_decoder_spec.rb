@@ -1,3 +1,4 @@
+require 'base64'
 require 'spec_helper'
 
 describe ItunesReceiptDecoder do
@@ -5,59 +6,21 @@ describe ItunesReceiptDecoder do
   let(:instance) { described_class.new(receipt_data, options) }
   let(:receipt_data) { File.read(receipt_path).chomp }
 
-  shared_context :transaction_receipt do
+  shared_context :transaction_production do
     let(:receipt_path) do
-      File.expand_path('../examples/transaction_receipt_1.txt', __FILE__)
+      File.expand_path('../examples/transaction_production.txt', __FILE__)
     end
   end
 
-  shared_context :unified_receipt do
+  shared_context :transaction_sandbox do
     let(:receipt_path) do
-      File.expand_path('../examples/unified_receipt.txt', __FILE__)
+      File.expand_path('../examples/transaction_sandbox.txt', __FILE__)
     end
   end
 
-  shared_examples '#production?' do
-    context 'when the environment is Production' do
-      before do
-        allow(instance).to receive(:environment).and_return('Production')
-      end
-
-      it 'returns true' do
-        expect(subject).to eq(true)
-      end
-    end
-
-    context 'when the environment is not Production' do
-      before do
-        allow(instance).to receive(:environment).and_return('Whatever')
-      end
-
-      it 'returns false' do
-        expect(subject).to eq(false)
-      end
-    end
-  end
-
-  shared_examples '#sandbox?' do
-    context 'when the environment is Production' do
-      before do
-        allow(instance).to receive(:environment).and_return('Production')
-      end
-
-      it 'returns false' do
-        expect(subject).to eq(false)
-      end
-    end
-
-    context 'when the environment is not Production' do
-      before do
-        allow(instance).to receive(:environment).and_return('Whatever')
-      end
-
-      it 'returns true' do
-        expect(subject).to eq(true)
-      end
+  shared_context :unified_sandbox do
+    let(:receipt_path) do
+      File.expand_path('../examples/unified_sandbox.txt', __FILE__)
     end
   end
 
@@ -70,16 +33,30 @@ describe ItunesReceiptDecoder do
   describe '.new' do
     subject { described_class.new(receipt_data) }
 
-    context 'with a transaction receipt' do
-      include_context :transaction_receipt
+    context 'with a transaction style receipt' do
+      include_context :transaction_sandbox
 
       it 'returns an instance of Decode::TransactionReceipt' do
         expect(subject).to be_a(described_class::Decode::TransactionReceipt)
       end
+
+      context 'when purchase-info can\'t be parsed' do
+        let(:receipt_data) do
+          plist = CFPropertyList::List.new
+          plist.value = CFPropertyList.guess(
+            'signature' => 'foobar',
+            'purchase-info' => 'foobar'
+          )
+          encoded = plist.to_str(CFPropertyList::List::FORMAT_PLAIN)
+          Base64.strict_encode64(encoded)
+        end
+
+        it_behaves_like 'an_exception'
+      end
     end
 
-    context 'with a unified receipt' do
-      include_context :unified_receipt
+    context 'with a unified style receipt' do
+      include_context :unified_sandbox
 
       it 'returns an instance of Decode::UnifiedReceipt' do
         expect(subject).to be_a(described_class::Decode::UnifiedReceipt)
@@ -113,8 +90,8 @@ describe ItunesReceiptDecoder do
   describe '#receipt' do
     subject { instance.receipt }
 
-    context 'with a transaction receipt' do
-      include_context :transaction_receipt
+    context 'with a transaction style receipt' do
+      include_context :transaction_sandbox
 
       it 'parses the purchase info' do
         expect(subject).to include(
@@ -126,8 +103,8 @@ describe ItunesReceiptDecoder do
       end
     end
 
-    context 'with a unified receipt' do
-      include_context :unified_receipt
+    context 'with a unified style receipt' do
+      include_context :unified_sandbox
 
       it 'parses the receipt' do
         expect(subject).to include(
@@ -194,52 +171,96 @@ describe ItunesReceiptDecoder do
   describe '#environment' do
     subject { instance.environment }
 
-    context 'with a transaction receipt' do
-      include_context :transaction_receipt
+    context 'with a transaction style receipt from sandbox' do
+      include_context :transaction_sandbox
 
-      it 'returns the environment the payload' do
-        expect(subject).to eq('Sandbox')
+      it 'returns :sandbox' do
+        expect(subject).to eq(:sandbox)
       end
     end
 
-    context 'with a unified receipt' do
-      include_context :unified_receipt
+    context 'with a transaction style receipt from production' do
+      include_context :transaction_production
 
-      it 'returns the environment from the receipt' do
-        expect(subject).to eq('ProductionSandbox')
+      it 'returns :production' do
+        expect(subject).to eq(:production)
       end
+    end
+
+    context 'with a unified style receipt from sandbox' do
+      include_context :unified_sandbox
+
+      it 'returns :sandbox' do
+        expect(subject).to eq(:sandbox)
+      end
+    end
+
+    context 'with a unified style receipt from production' do
+      it 'returns :production'
     end
   end
 
   describe '#production?' do
     subject { instance.production? }
 
-    context 'with a transaction receipt' do
-      include_context :transaction_receipt
+    context 'with a transaction style receipt from production' do
+      include_context :transaction_production
 
-      it_behaves_like '#production?'
+      it 'returns true' do
+        expect(subject).to eq(true)
+      end
     end
 
-    context 'with a unified receipt' do
-      include_context :unified_receipt
+    context 'with a transaction style receipt from sandbox' do
+      include_context :transaction_sandbox
 
-      it_behaves_like '#production?'
+      it 'returns false' do
+        expect(subject).to eq(false)
+      end
+    end
+
+    context 'with a unified style receipt from production' do
+      it 'returns true'
+    end
+
+    context 'with a unified style receipt from sandbox' do
+      include_context :unified_sandbox
+
+      it 'returns false' do
+        expect(subject).to eq(false)
+      end
     end
   end
 
   describe '#sandbox?' do
     subject { instance.sandbox? }
 
-    context 'with a transaction receipt' do
-      include_context :transaction_receipt
+    context 'with a transaction style receipt from sandbox' do
+      include_context :transaction_sandbox
 
-      it_behaves_like '#sandbox?'
+      it 'returns true' do
+        expect(subject).to eq(true)
+      end
     end
 
-    context 'with a unified receipt' do
-      include_context :unified_receipt
+    context 'with a transaction style receipt from production' do
+      include_context :transaction_production
 
-      it_behaves_like '#sandbox?'
+      it 'returns false' do
+        expect(subject).to eq(false)
+      end
+    end
+
+    context 'with a unified style receipt from sandbox' do
+      include_context :unified_sandbox
+
+      it 'returns true' do
+        expect(subject).to eq(true)
+      end
+    end
+
+    context 'with a unified style receipt from production' do
+      it 'returns false'
     end
   end
 
@@ -247,7 +268,7 @@ describe ItunesReceiptDecoder do
     subject { instance.style }
 
     context 'with a transaction receipt' do
-      include_context :transaction_receipt
+      include_context :transaction_sandbox
 
       it 'returns :transaction' do
         expect(subject).to eq(:transaction)
@@ -255,7 +276,7 @@ describe ItunesReceiptDecoder do
     end
 
     context 'with a unified receipt' do
-      include_context :unified_receipt
+      include_context :unified_sandbox
 
       it 'returns :unified' do
         expect(subject).to eq(:unified)

@@ -43,7 +43,11 @@ module ItunesReceiptDecoder
 
       def decode
         @receipt = parse_app_receipt_fields(payload.value)
-        @environment = @receipt.fetch(:environment, nil)
+        if @receipt.fetch(:environment, 'Production') == 'Production'
+          @environment = :production
+        else
+          @environment = :sandbox
+        end
       end
 
       def parse_app_receipt_fields(fields)

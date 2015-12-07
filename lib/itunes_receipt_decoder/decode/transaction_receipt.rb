@@ -16,9 +16,11 @@ module ItunesReceiptDecoder
 
       def decode
         @receipt = parse_purchase_info
-        @environment = payload.fetch('environment', nil)
-      rescue KeyError => e
-        raise DecodingError, e.message
+        if payload.fetch('environment', 'Production') == 'Production'
+          @environment = :production
+        else
+          @environment = :sandbox
+        end
       end
 
       def parse_purchase_info
@@ -30,14 +32,8 @@ module ItunesReceiptDecoder
       end
 
       def purchase_info
-        return @purchase_info if @purchase_info
-        contents = Base64.decode64 payload.fetch('purchase-info')
-      rescue KeyError => e
-        raise DecodingError, e.message
-      rescue ArgumentError => e
-        raise DecodingError, e.message
-      else
-        @purchase_info = parse_plist(contents)
+        @purchase_info ||=
+          parse_plist(payload.fetch('purchase-info').unpack('m').first)
       end
 
       def payload
@@ -49,6 +45,8 @@ module ItunesReceiptDecoder
         hash = CFPropertyList.native_types(plist.value)
         fail DecodingError, 'hash not found in plist' unless hash.is_a?(Hash)
         hash
+      rescue CFPlistError => e
+        raise DecodingError, e.message
       end
     end
   end

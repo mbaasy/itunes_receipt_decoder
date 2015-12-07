@@ -26,7 +26,7 @@ module ItunesReceiptDecoder
       ##
       # Returns true if the receipt is created in the Production environment
       def production?
-        environment == 'Production'
+        environment == :production
       end
 
       ##

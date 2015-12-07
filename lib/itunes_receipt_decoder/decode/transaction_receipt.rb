@@ -16,6 +16,7 @@ module ItunesReceiptDecoder
 
       def decode
         @receipt = parse_purchase_info
+        @environment = payload.fetch('environment', nil)
       rescue KeyError => e
         raise DecodingError, e.message
       end

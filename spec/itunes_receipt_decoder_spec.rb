@@ -17,6 +17,50 @@ describe ItunesReceiptDecoder do
     end
   end
 
+  shared_examples '#production?' do
+    context 'when the environment is Production' do
+      before do
+        allow(instance).to receive(:environment).and_return('Production')
+      end
+
+      it 'returns true' do
+        expect(subject).to eq(true)
+      end
+    end
+
+    context 'when the environment is not Production' do
+      before do
+        allow(instance).to receive(:environment).and_return('Whatever')
+      end
+
+      it 'returns false' do
+        expect(subject).to eq(false)
+      end
+    end
+  end
+
+  shared_examples '#sandbox?' do
+    context 'when the environment is Production' do
+      before do
+        allow(instance).to receive(:environment).and_return('Production')
+      end
+
+      it 'returns false' do
+        expect(subject).to eq(false)
+      end
+    end
+
+    context 'when the environment is not Production' do
+      before do
+        allow(instance).to receive(:environment).and_return('Whatever')
+      end
+
+      it 'returns true' do
+        expect(subject).to eq(true)
+      end
+    end
+  end
+
   shared_examples 'an_exception' do
     it 'raises a DecodingError' do
       expect { subject }.to raise_error(described_class::DecodingError)
@@ -148,64 +192,54 @@ describe ItunesReceiptDecoder do
   end
 
   describe '#environment' do
-    include_context :unified_receipt
-
     subject { instance.environment }
 
-    it 'returns the environment from the receipt' do
-      expect(subject).to eq('ProductionSandbox')
+    context 'with a transaction receipt' do
+      include_context :transaction_receipt
+
+      it 'returns the environment the payload' do
+        expect(subject).to eq('Sandbox')
+      end
+    end
+
+    context 'with a unified receipt' do
+      include_context :unified_receipt
+
+      it 'returns the environment from the receipt' do
+        expect(subject).to eq('ProductionSandbox')
+      end
     end
   end
 
   describe '#production?' do
-    include_context :unified_receipt
-
     subject { instance.production? }
 
-    context 'when the environment is Production' do
-      before do
-        allow(instance).to receive(:environment).and_return('Production')
-      end
+    context 'with a transaction receipt' do
+      include_context :transaction_receipt
 
-      it 'returns true' do
-        expect(subject).to eq(true)
-      end
+      it_behaves_like '#production?'
     end
 
-    context 'when the environment is not Production' do
-      before do
-        allow(instance).to receive(:environment).and_return('Whatever')
-      end
+    context 'with a unified receipt' do
+      include_context :unified_receipt
 
-      it 'returns false' do
-        expect(subject).to eq(false)
-      end
+      it_behaves_like '#production?'
     end
   end
 
   describe '#sandbox?' do
-    include_context :unified_receipt
-
     subject { instance.sandbox? }
 
-    context 'when the environment is Production' do
-      before do
-        allow(instance).to receive(:environment).and_return('Production')
-      end
+    context 'with a transaction receipt' do
+      include_context :transaction_receipt
 
-      it 'returns false' do
-        expect(subject).to eq(false)
-      end
+      it_behaves_like '#sandbox?'
     end
 
-    context 'when the environment is not Production' do
-      before do
-        allow(instance).to receive(:environment).and_return('Whatever')
-      end
+    context 'with a unified receipt' do
+      include_context :unified_receipt
 
-      it 'returns true' do
-        expect(subject).to eq(true)
-      end
+      it_behaves_like '#sandbox?'
     end
   end
 

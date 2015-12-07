@@ -9,7 +9,7 @@ module ItunesReceiptDecoder
     class Base
       ##
       # The raw receipt, i.e. not base64 encoded
-      attr_reader :raw_receipt, :receipt, :options, :style
+      attr_reader :raw_receipt, :receipt, :options, :style, :environment
 
       ##
       # Initializes with a raw (base64 decoded receipt)
@@ -21,6 +21,18 @@ module ItunesReceiptDecoder
         @raw_receipt = raw_receipt
         @options = options
         decode
+      end
+
+      ##
+      # Returns true if the receipt is created in the Production environment
+      def production?
+        environment == 'Production'
+      end
+
+      ##
+      # Returns true if the receipt is +not+ created in Production
+      def sandbox?
+        !production?
       end
     end
   end

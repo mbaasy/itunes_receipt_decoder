@@ -34,23 +34,9 @@ module ItunesReceiptDecoder
                             original_purchase_date expires_date
                             cancellation_date)
 
-      attr_reader :environment
-
       def initialize(raw_receipt, options = {})
         @style = :unified
         super
-      end
-
-      ##
-      # Returns true if the receipt is created in the Production environment
-      def production?
-        environment == 'Production'
-      end
-
-      ##
-      # Returns true if the receipt is created in the Sandbox environment
-      def sandbox?
-        !production?
       end
 
       private

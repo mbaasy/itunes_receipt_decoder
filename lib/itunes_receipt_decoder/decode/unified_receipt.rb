@@ -1,3 +1,7 @@
+require 'time'
+require 'openssl'
+require 'itunes_receipt_decoder/decode/base'
+
 ##
 # ItunesReceiptDecoder
 module ItunesReceiptDecoder

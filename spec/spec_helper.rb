@@ -6,6 +6,7 @@ else
   SimpleCov.start
 end
 
+require 'base64'
 require 'itunes_receipt_decoder'
 
 RSpec.configure do |config|

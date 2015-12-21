@@ -1,8 +1,4 @@
-require 'time'
-require 'openssl'
-require 'cfpropertylist'
 require 'itunes_receipt_decoder/version'
-require 'itunes_receipt_decoder/decode/base'
 require 'itunes_receipt_decoder/decode/transaction_receipt'
 require 'itunes_receipt_decoder/decode/unified_receipt'
 

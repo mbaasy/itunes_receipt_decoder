@@ -19,6 +19,8 @@ module ItunesReceiptDecoder
         0 => :environment,
         2 => :bundle_id,
         3 => :application_version,
+        4 => :opaque_value,
+        5 => :sha1_hash,
         12 => :creation_date,
         17 => :in_app,
         19 => :original_application_version,
@@ -43,6 +45,14 @@ module ItunesReceiptDecoder
         super
       end
 
+      def uuid_valid?(uuid)
+        digest = OpenSSL::Digest::SHA1.new
+        digest << uuid.scan(/[0-9A-F]{2}/).map(&:hex).pack('c*')
+        digest << @receipt[:opaque_value]
+        digest << @raw_bundle_id
+        digest.digest == @receipt[:sha1_hash]
+      end
+
       private
 
       def decode
@@ -59,7 +69,12 @@ module ItunesReceiptDecoder
         fields.each do |seq|
           type, _version, value = seq.value.map(&:value)
           next unless (field = RECEIPT_FIELDS[type.to_i])
-          build_result(result, field, value)
+          if %i(opaque_value sha1_hash).include?(field)
+            result[field] = value
+          else
+            @raw_bundle_id = value if field == :bundle_id
+            build_result(result, field, value)
+          end
         end
         result
       end

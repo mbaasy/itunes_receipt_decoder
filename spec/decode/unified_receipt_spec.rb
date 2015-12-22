@@ -46,7 +46,7 @@ describe ItunesReceiptDecoder::Decode::UnifiedReceipt do
     subject { super().receipt }
 
     it 'parses the receipt' do
-      expect(subject).to eq(json)
+      expect(subject).to include(json)
     end
 
     context 'when expand_timestamps is true' do
@@ -134,6 +134,27 @@ describe ItunesReceiptDecoder::Decode::UnifiedReceipt do
 
     it 'returns :unified' do
       expect(subject).to eq(:unified)
+    end
+  end
+
+  describe '#uuid_valid?' do
+    include_context :sandbox
+
+    subject { super().uuid_valid?(uuid) }
+
+    context 'with the correct uuuid' do
+      let(:uuid) { '3F27583E-3E39-4865-A9F2-98256C105CDF' }
+      it 'returns true' do
+        expect(subject).to eq(true)
+      end
+    end
+
+    context 'with an incorrect uuid' do
+      let(:uuid) { '4F27583E-3E39-4865-A9F2-98256C105CDF' }
+
+      it 'returns false' do
+        expect(subject).to eq(false)
+      end
     end
   end
 end

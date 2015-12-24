@@ -11,32 +11,17 @@ module ItunesReceiptDecoder
     ##
     # ItunesReceiptDecoder::Decode::TransactionReceipt
     class TransactionReceipt < Base
-      INTERMEDIATE_CERT = OpenSSL::X509::Certificate.new <<-CERTIFICATE
------BEGIN CERTIFICATE-----
-MIIECzCCAvOgAwIBAgIBGjANBgkqhkiG9w0BAQUFADBiMQswCQYDVQQGEwJVUzET
-MBEGA1UEChMKQXBwbGUgSW5jLjEmMCQGA1UECxMdQXBwbGUgQ2VydGlmaWNhdGlv
-biBBdXRob3JpdHkxFjAUBgNVBAMTDUFwcGxlIFJvb3QgQ0EwHhcNMDkwNTE5MTgz
-MTMwWhcNMTYwNTE4MTgzMTMwWjB/MQswCQYDVQQGEwJVUzETMBEGA1UECgwKQXBw
-bGUgSW5jLjEmMCQGA1UECwwdQXBwbGUgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkx
-MzAxBgNVBAMMKkFwcGxlIGlUdW5lcyBTdG9yZSBDZXJ0aWZpY2F0aW9uIEF1dGhv
-cml0eTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKS8rzKUQz4LvDeH
-zWOJ8szZviBNWrT+h2fSmt4aVJ2i89+H5EzLkxF4oDCPNEHB075mbUdsmLjsetXJ
-3aXk6sZw9DXQkfez2AoRmas6Yjq9e/RWT9ufJJNRUHwg1WZNZvMYpBOWIhb9Maf0
-OWab+2JpXEuflKhL6OxbZFoYeYoWdWNCpEnZjDPerXvWOQT04p0KaYzrSxIoSzRI
-B5sOWfkfYrADnza4TqPTdVnU8zoFysUzO/jABgkIk9vnTb8R81IspRY1FfNBAs0C
-0fz1+MWEvWNqhta2mfaGrl/9A9Qoilpdr7xldNH3GsOSCPQcrWnoAkwOlRUHvL5q
-b8GzraECAwEAAaOBrjCBqzAOBgNVHQ8BAf8EBAMCAYYwDwYDVR0TAQH/BAUwAwEB
-/zAdBgNVHQ4EFgQUNh3o4p2C0gEYtTJrDtdDC5FYQzowHwYDVR0jBBgwFoAUK9Bp
-R5R2Cf70a40uQKb3R01/CF4wNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL3d3dy5h
-cHBsZS5jb20vYXBwbGVjYS9yb290LmNybDAQBgoqhkiG92NkBgICBAIFADANBgkq
-hkiG9w0BAQUFAAOCAQEAdaaQ5pqn22VwpgmTbwjfLNvpKI1AG1deoOr07BNlG3FK
-TdyASE/y5an7hWy3Hp3b9BhIEHkX6sM9h9i0eW0UUK3Svz1O/A3ixQOUdYBzTaWh
-kf4c3hUXrIlxKm8PZwrTnDChaPvPcBfK2UD8+Bu/zrDErvRKLamZhwZCCYYiaoRA
-OfS7rFYY95ocAYFcjG5B8l0ZLBccSUbZHH6TEhPIZ5nC6oPjoowOuDsq3xy/S4tv
-Grjul2dK2Kuvi6TaXIceILjF87HEmKI3+J7GmmulrfZ4lg6CjwRGHLKl/ZowUSj9
-UgQVA9U8rf72eODqNe9ltSF226Tvy3LvVGsBDcfdGg==
------END CERTIFICATE-----
-CERTIFICATE
+      PUBLIC_KEY = OpenSSL::PKey::RSA.new <<-PUBLIC_KEY
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApLyvMpRDPgu8N4fNY4ny
+zNm+IE1atP6HZ9Ka3hpUnaLz34fkTMuTEXigMI80QcHTvmZtR2yYuOx61cndpeTq
+xnD0NdCR97PYChGZqzpiOr179FZP258kk1FQfCDVZk1m8xikE5YiFv0xp/Q5Zpv7
+YmlcS5+UqEvo7FtkWhh5ihZ1Y0KkSdmMM96te9Y5BPTinQppjOtLEihLNEgHmw5Z
++R9isAOfNrhOo9N1WdTzOgXKxTM7+MAGCQiT2+dNvxHzUiylFjUV80ECzQLR/PX4
+xYS9Y2qG1raZ9oauX/0D1CiKWl2vvGV00fcaw5II9BytaegCTA6VFQe8vmpvwbOt
+oQIDAQAB
+-----END PUBLIC KEY-----
+PUBLIC_KEY
 
       def initialize(raw_receipt, options = {})
         @style = :transaction
@@ -51,7 +36,7 @@ CERTIFICATE
           sig.size == 128 &&
           cert.size == cert_length &&
           (cert = OpenSSL::X509::Certificate.new(cert)) &&
-          cert.verify(INTERMEDIATE_CERT.public_key)
+          cert.verify(PUBLIC_KEY)
         data = [version, purchase_info].pack('ca*')
         cert.public_key.verify(OpenSSL::Digest::SHA1.new, sig, data)
       end

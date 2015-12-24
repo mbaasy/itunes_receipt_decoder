@@ -9,7 +9,7 @@ module ItunesReceiptDecoder
     class Base
       ##
       # The raw receipt, i.e. not base64 encoded
-      attr_reader :raw_receipt, :receipt, :options, :style, :environment
+      attr_reader :raw_receipt, :receipt, :options, :environment
 
       ##
       # Initializes with a raw (base64 decoded receipt)

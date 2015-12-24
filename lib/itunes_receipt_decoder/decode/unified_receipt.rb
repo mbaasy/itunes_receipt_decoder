@@ -52,9 +52,8 @@ PUBLIC_KEY
                             original_purchase_date expires_date
                             cancellation_date)
 
-      def initialize(raw_receipt, options = {})
-        @style = :unified
-        super
+      def style
+        :unified
       end
 
       def uuid_valid?(uuid)

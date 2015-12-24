@@ -23,9 +23,8 @@ oQIDAQAB
 -----END PUBLIC KEY-----
 PUBLIC_KEY
 
-      def initialize(raw_receipt, options = {})
-        @style = :transaction
-        super
+      def style
+        :transaction
       end
 
       def signature_valid?

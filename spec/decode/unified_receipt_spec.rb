@@ -157,4 +157,14 @@ describe ItunesReceiptDecoder::Decode::UnifiedReceipt do
       end
     end
   end
+
+  describe '#signature_valid?' do
+    include_context :sandbox
+
+    subject { super().signature_valid? }
+
+    it 'returns true' do
+      expect(subject).to eq(true)
+    end
+  end
 end

@@ -1,6 +1,7 @@
 require 'time'
 require 'openssl'
 require 'itunes_receipt_decoder/decode/base'
+require 'itunes_receipt_decoder/public_key'
 
 ##
 # ItunesReceiptDecoder
@@ -11,18 +12,6 @@ module ItunesReceiptDecoder
     ##
     # ItunesReceiptDecoder::Decode::UnifiedReceipt
     class UnifiedReceipt < Base
-      PUBLIC_KEY = OpenSSL::PKey::RSA.new <<-PUBLIC_KEY
------BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyjhUpstWqsgkOUjpjO7s
-X7h/JpG8NFN6znxjgGF3ZF6lByO2Of5QLRVWWHAtfsRuwUqFPi/w3oQaoVfJr3sY
-/2r6FRJJFQgZrKrbKjLtlmNoUhU9jIrsv2sYleADrAF9lwVnzg6FlTdq7Qm2rmfN
-UWSfxlzRvFduZzWAdjakh4FuOI/YKxVOeyXYWr9Og8GN0pPVGnG1YJydM05V+RJY
-DIa4Fg3B5XdFjVBIuist5JSF4ejEncZopbCj/Gd+cLoCWUt3QpE5ufXN4UzvwDtI
-jKblIV39amq7pxY1YNLmrfNGKcnow4vpecBqYWcVsvD95Wi8Yl9uz5nd7xtj/pJl
-qwIDAQAB
------END PUBLIC KEY-----
-PUBLIC_KEY
-
       ##
       # ASN.1 Field types
       #
@@ -46,11 +35,11 @@ PUBLIC_KEY
         1708 => :expires_date,
         1712 => :cancellation_date,
         1711 => :web_order_line_item_id
-      }
+      }.freeze
 
       TIMESTAMP_FIELDS = %i(creation_date expiration_date purchase_date
                             original_purchase_date expires_date
-                            cancellation_date)
+                            cancellation_date).freeze
 
       def style
         :unified
@@ -67,18 +56,19 @@ PUBLIC_KEY
       def signature_valid?
         serial = pkcs7.signers.first.serial.to_i
         cert = pkcs7.certificates.find { |c| c.serial.to_i == serial }
-        cert && cert.verify(PUBLIC_KEY)
+        cert && cert.verify(PublicKey::V3)
       end
 
       private
 
       def decode
         @receipt = parse_app_receipt_fields(payload.value)
-        if @receipt.fetch(:environment, 'Production') == 'Production'
-          @environment = :production
-        else
-          @environment = :sandbox
-        end
+        @environment =
+          if @receipt.fetch(:environment, 'Production') == 'Production'
+            :production
+          else
+            :sandbox
+          end
       end
 
       def parse_app_receipt_fields(fields)

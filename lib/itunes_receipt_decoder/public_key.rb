@@ -1,0 +1,32 @@
+require 'openssl'
+
+##
+# ItunesReceiptDecoder
+module ItunesReceiptDecoder
+  ##
+  # ItunesReceiptDecoder::PublicKey
+  module PublicKey
+    V2 = OpenSSL::PKey::RSA.new <<-PUBLIC_KEY
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApLyvMpRDPgu8N4fNY4ny
+zNm+IE1atP6HZ9Ka3hpUnaLz34fkTMuTEXigMI80QcHTvmZtR2yYuOx61cndpeTq
+xnD0NdCR97PYChGZqzpiOr179FZP258kk1FQfCDVZk1m8xikE5YiFv0xp/Q5Zpv7
+YmlcS5+UqEvo7FtkWhh5ihZ1Y0KkSdmMM96te9Y5BPTinQppjOtLEihLNEgHmw5Z
++R9isAOfNrhOo9N1WdTzOgXKxTM7+MAGCQiT2+dNvxHzUiylFjUV80ECzQLR/PX4
+xYS9Y2qG1raZ9oauX/0D1CiKWl2vvGV00fcaw5II9BytaegCTA6VFQe8vmpvwbOt
+oQIDAQAB
+-----END PUBLIC KEY-----
+PUBLIC_KEY
+    V3 = OpenSSL::PKey::RSA.new <<-PUBLIC_KEY
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyjhUpstWqsgkOUjpjO7s
+X7h/JpG8NFN6znxjgGF3ZF6lByO2Of5QLRVWWHAtfsRuwUqFPi/w3oQaoVfJr3sY
+/2r6FRJJFQgZrKrbKjLtlmNoUhU9jIrsv2sYleADrAF9lwVnzg6FlTdq7Qm2rmfN
+UWSfxlzRvFduZzWAdjakh4FuOI/YKxVOeyXYWr9Og8GN0pPVGnG1YJydM05V+RJY
+DIa4Fg3B5XdFjVBIuist5JSF4ejEncZopbCj/Gd+cLoCWUt3QpE5ufXN4UzvwDtI
+jKblIV39amq7pxY1YNLmrfNGKcnow4vpecBqYWcVsvD95Wi8Yl9uz5nd7xtj/pJl
+qwIDAQAB
+-----END PUBLIC KEY-----
+PUBLIC_KEY
+  end
+end

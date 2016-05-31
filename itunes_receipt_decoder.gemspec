@@ -22,10 +22,10 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'CFPropertyList', '~> 2.3'
 
-  spec.add_development_dependency 'rake', '~> 10.4'
-  spec.add_development_dependency 'rspec', '~> 3.3'
+  spec.add_development_dependency 'rake', '~> 11.1'
+  spec.add_development_dependency 'rspec', '~> 3.4'
   spec.add_development_dependency 'rubygems-tasks', '~> 0.2'
-  spec.add_development_dependency 'simplecov', '~> 0.10'
-  spec.add_development_dependency 'codeclimate-test-reporter', '~> 0.4'
-  spec.add_development_dependency 'rubocop', '~> 0.33'
+  spec.add_development_dependency 'simplecov', '~> 0.11'
+  spec.add_development_dependency 'codeclimate-test-reporter', '~> 0.5'
+  spec.add_development_dependency 'rubocop', '~> 0.40'
 end
